@@ -16,35 +16,13 @@ int str_check_sigchar(int target)
 	}
 }
 
-int str_create(str_t* strPtr)
-{
-	int retValue = 0;
-	void* allocTmp;
 
-	allocTmp = malloc(sizeof(char));
-	if(allocTmp == NULL)
-	{
-		retValue = -1;
-		goto RET;
-	}
-	else
-	{
-		strPtr->str = allocTmp;
-
-		strPtr->str[0] = '\0';
-		strPtr->size = 1;
-	}
-
-RET:
-	return retValue;
-}
-
-int str_delete(str_t* strPtr)
+int str_clean(str_t* strPtr)
 {
 	if(strPtr->str != NULL)
 		free(strPtr->str);
 
-	strPtr->size = 0;
+	strPtr->size = 1;
 
 	return 0;
 }
@@ -79,6 +57,10 @@ int str_append(str_t* strPtr, int appendChar)
 {
 	int retValue = 0;
 	void* allocTmp = NULL;
+	
+	// Checking
+	if(strPtr->size == 0)
+		strPtr->size = 1;
 
 	allocTmp = realloc(strPtr->str, sizeof(char) * (strPtr->size + 1));
 	if(allocTmp == NULL)
