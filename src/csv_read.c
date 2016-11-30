@@ -5,6 +5,8 @@
 #include "csv_dataproc.h"
 #include "csv_strproc.h"
 
+#include "debug.h"
+
 int csv_append_number(double** dst, int* dstLen, double num);
 
 int csv_read(csv_t* csvPtr, const char* filePath)
@@ -22,6 +24,11 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	const char* str;
 
 	FILE* fileRead = NULL;
+
+	log("enter");
+
+	// Zero memory
+	str_zero_mem(&readBuffer);
 
 	// Open file
 	fileRead = fopen(filePath, "rb");
@@ -118,6 +125,8 @@ RET:
 		fclose(fileRead);
 	
 	str_clean(&readBuffer);
+	
+	log("exit");
 
 	return retValue;
 }
@@ -126,6 +135,8 @@ int csv_append_number(double** dstPtr, int* lenPtr, double num)
 {
 	int retValue = CSV_NO_ERROR;
 	void* allocTmp = NULL;
+
+	log("enter");
 
 	allocTmp = realloc(*dstPtr, *lenPtr * (sizeof(double) + 1));
 	if(allocTmp == NULL)
@@ -138,6 +149,8 @@ int csv_append_number(double** dstPtr, int* lenPtr, double num)
 		*lenPtr += 1;
 		(*dstPtr)[*lenPtr - 1] = num;
 	}
+
+	log("exit");
 
 	return retValue;
 }

@@ -26,6 +26,7 @@ extern "C" {
 
 int str_check_sigchar(int target);
 
+int str_zero_mem(str_t* strPtr);
 int str_clean(str_t* strPtr);
 int str_append(str_t* strPtr, int appendChar);
 

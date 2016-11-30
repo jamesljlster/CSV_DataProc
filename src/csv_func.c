@@ -3,12 +3,18 @@
 
 #include "csv_dataproc.h"
 
+#include "debug.h"
+
 int csv_delete(csv_t csv)
 {
+	log("enter");
+
 	if(csv.data != NULL)
 	{
 		free(csv.data);
 	}
+
+	log("exit");
 	
 	return CSV_NO_ERROR;
 }
@@ -16,6 +22,8 @@ int csv_delete(csv_t csv)
 void csv_print(csv_t csv)
 {
 	int i, j;
+	
+	log("enter");
 
 	for(i = 0; i < csv.rows; i++)
 	{
@@ -33,5 +41,7 @@ void csv_print(csv_t csv)
 			}
 		}
 	}
+
+	log("exit");
 }
 
