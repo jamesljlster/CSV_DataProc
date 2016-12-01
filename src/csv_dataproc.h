@@ -17,6 +17,10 @@ typedef struct _CSV
 	double* data;
 } *csv_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int csv_create(csv_t* csvPtr, int rows, int cols);
 int csv_read(csv_t* csvPtr, const char* filePath);
 
@@ -30,10 +34,6 @@ int csv_write(csv_t csv, const char* filePath);
 int csv_delete(csv_t csv);
 
 void csv_print(csv_t csv);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #ifdef __cplusplus
 }
