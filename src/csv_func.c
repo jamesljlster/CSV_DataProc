@@ -5,6 +5,18 @@
 
 #include "debug.h"
 
+int csv_get_value(csv_t csv, int row, int col, double* numPtr)
+{
+	// Checking
+	if(row >= csv.rows || col >= csv.cols)
+		return CSV_OUT_OF_RANGE;
+	
+	*numPtr = csv.data[row * csv.cols + col];
+
+	return CSV_NO_ERROR;
+
+}
+
 int csv_set_value(csv_t csv, int row, int col, double num)
 {
 	// Checking
