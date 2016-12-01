@@ -23,6 +23,7 @@ extern "C" {
 
 int csv_create(csv_t* csvPtr, int rows, int cols);
 int csv_read(csv_t* csvPtr, const char* filePath);
+int csv_clone(csv_t* csvPtr, csv_t src);
 
 int csv_set_value(csv_t csv, int row, int col, double num);
 int csv_get_value(csv_t csv, int row, int col, double* numPtr);

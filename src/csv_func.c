@@ -1,9 +1,32 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "csv_dataproc.h"
 
 #include "debug.h"
+
+int csv_clone(csv_t* csvPtr, csv_t src)
+{
+	int iResult;
+	int retValue = CSV_NO_ERROR;
+	csv_t tmp = NULL;
+
+	iResult = csv_create(&tmp, src->rows, src->cols);
+	if(iResult != CSV_NO_ERROR)
+	{
+		retValue = iResult;
+		goto RET;
+	}
+
+	memcpy(tmp->data, src->data, sizeof(double) * src->rows * src->cols);
+
+	*csvPtr = tmp;
+
+RET:
+	return retValue;
+}
+
 
 int csv_get_rows(csv_t csv)
 {
