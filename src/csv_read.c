@@ -25,6 +25,8 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 
 	FILE* fileRead = NULL;
 
+	csv_t tmpCsv = NULL;
+
 	log("enter");
 
 	// Zero memory
@@ -108,11 +110,22 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 
 	// Find row count
 	matRows = matLen / matCols;
+	
+	tmpCsv = malloc(sizeof(struct _CSV));
+	if(tmpCsv == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto ERR;
+	}
+	else
+	{
+		// Assign values
+		tmpCsv->data = matrix;
+		tmpCsv->rows = matRows;
+		tmpCsv->cols = matCols;
 
-	// Assign values
-	csvPtr->data = matrix;
-	csvPtr->rows = matRows;
-	csvPtr->cols = matCols;
+		*csvPtr = tmpCsv;
+	}
 
 	goto RET;
 

@@ -15,7 +15,7 @@ typedef struct _CSV
 	int rows;
 	int cols;
 	double* data;
-} csv_t;
+} *csv_t;
 
 int csv_create(csv_t* csvPtr, int rows, int cols);
 int csv_read(csv_t* csvPtr, const char* filePath);
