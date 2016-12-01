@@ -23,6 +23,9 @@ int csv_read(csv_t* csvPtr, const char* filePath);
 int csv_set_value(csv_t csv, int row, int col, double num);
 int csv_get_value(csv_t csv, int row, int col, double* numPtr);
 
+int csv_get_rows(csv_t csv);
+int csv_get_cols(csv_t csv);
+
 int csv_write(csv_t csv, const char* filePath);
 int csv_delete(csv_t csv);
 

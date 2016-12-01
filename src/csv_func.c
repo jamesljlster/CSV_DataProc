@@ -5,6 +5,16 @@
 
 #include "debug.h"
 
+int csv_get_rows(csv_t csv)
+{
+	return csv->rows;
+}
+
+int csv_get_cols(csv_t csv)
+{
+	return csv->cols;
+}
+
 int csv_get_value(csv_t csv, int row, int col, double* numPtr)
 {
 	// Checking
