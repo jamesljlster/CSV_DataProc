@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "csv_dataproc.h"
 
@@ -38,15 +39,13 @@ int csv_get_cols(csv_t csv)
 	return csv->cols;
 }
 
-int csv_get_value(csv_t csv, int row, int col, double* numPtr)
+double csv_get_value(csv_t csv, int row, int col)
 {
 	// Checking
-	if(row >= csv->rows || col >= csv->cols)
-		return CSV_OUT_OF_RANGE;
-	
-	*numPtr = csv->data[row * csv->cols + col];
+	assert(row < csv->rows && row >= 0);
+	assert(col < csv->cols && col >= 0);
 
-	return CSV_NO_ERROR;
+	return csv->data[row * csv->cols + col];
 
 }
 
