@@ -14,7 +14,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Set project
-project(${PROJECT_NAME} C CXX)
+project(${PROJECT_NAME} C)
 
 # Add definition
 if(CMAKE_BUILD_TYPE MATCHES Debug)
