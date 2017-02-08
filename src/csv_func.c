@@ -49,6 +49,16 @@ double csv_get_value(csv_t csv, int row, int col)
 
 }
 
+double* csv_get_value_ptr(csv_t csv, int row, int col)
+{
+	// Checking
+	assert(row < csv->rows && row >= 0);
+	assert(col < csv->cols && col >= 0);
+
+	return &(csv->data[row * csv->cols + col]);
+
+}
+
 int csv_set_value(csv_t csv, int row, int col, double num)
 {
 	// Checking

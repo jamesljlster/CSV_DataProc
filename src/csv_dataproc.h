@@ -27,6 +27,7 @@ int csv_clone(csv_t* csvPtr, csv_t src);
 
 int csv_set_value(csv_t csv, int row, int col, double num);
 double csv_get_value(csv_t csv, int row, int col);
+double* csv_get_value_ptr(csv_t csv, int row, int col);
 
 int csv_get_rows(csv_t csv);
 int csv_get_cols(csv_t csv);
