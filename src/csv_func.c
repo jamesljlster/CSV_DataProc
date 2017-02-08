@@ -21,6 +21,7 @@ int csv_clone(csv_t* csvPtr, csv_t src)
 	}
 
 	memcpy(tmp->data, src->data, sizeof(double) * src->rows * src->cols);
+	memcpy(tmp->dataBak, src->dataBak, sizeof(double) * src->rows * src->cols);
 
 	*csvPtr = tmp;
 
@@ -122,6 +123,11 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 		retValue = CSV_MEM_FAILED;
 		goto RET;
 	}
+	else
+	{
+		tmpCsv->rows = rows;
+		tmpCsv->cols = cols;
+	}
 
 	allocTmp = calloc(rows * cols, sizeof(double));
 	if(allocTmp == NULL)
@@ -132,8 +138,19 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	else
 	{
 		tmpCsv->data = allocTmp;
-		tmpCsv->rows = rows;
-		tmpCsv->cols = cols;
+		allocTmp = NULL;
+	}
+
+	allocTmp = calloc(rows * cols, sizeof(double));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto ERR;
+	}
+	else
+	{
+		tmpCsv->dataBak = allocTmp;
+		allocTmp = NULL;
 	}
 
 	*csvPtr = tmpCsv;
@@ -146,6 +163,9 @@ ERR:
 	if(tmpCsv != NULL)
 		free(tmpCsv);
 
+	if(allocTmp != NULL)
+		free(allocTmp);
+
 RET:
 	return retValue;
 }
@@ -156,12 +176,23 @@ int csv_delete(csv_t csv)
 	
 	if(csv != NULL)
 	{
+		log("free data");
 		if(csv->data != NULL)
 		{
 			free(csv->data);
 		}
+		log("finish");
 
+		log("free data backup");
+		if(csv->dataBak != NULL)
+		{
+			free(csv->dataBak);
+		}
+		log("finish");
+
+		log("free csv struct");
 		free(csv);
+		log("finish");
 	}
 
 	log("exit");

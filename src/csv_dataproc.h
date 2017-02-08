@@ -14,6 +14,7 @@ typedef struct _CSV
 {
 	int rows;
 	int cols;
+	double* dataBak;
 	double* data;
 } *csv_t;
 
