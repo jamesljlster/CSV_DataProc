@@ -67,6 +67,7 @@ int csv_set_value(csv_t csv, int row, int col, double num)
 		return CSV_OUT_OF_RANGE;
 	
 	csv->data[row * csv->cols + col] = num;
+	csv->dataBak[row * csv->cols + col] = num;
 
 	return CSV_NO_ERROR;
 }
