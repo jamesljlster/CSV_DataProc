@@ -84,7 +84,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 				// Check end of line
 				if(tmpRead == LF)
 				{
-					if(matCols = -1)
+					if(matCols == -1)
 					{
 						matCols = tmpCols;
 					}

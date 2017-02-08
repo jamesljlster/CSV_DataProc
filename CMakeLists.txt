@@ -5,7 +5,7 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation 
 set(BUILD_TEST OFF CACHE BOOL "Enable building test")
 
 # Set project
-project(CSV_DataProc C CXX)
+project(CSV_DataProc C)
 
 # Add subdirectory
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)

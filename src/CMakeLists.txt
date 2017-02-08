@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_C_FLAGS_RELEASE "-O3")
+
 # Variables
 set(PROJECT_NAME csv_dataproc)
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Build confugure" FORCE)
@@ -11,7 +14,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Set project
-project(${PROJECT_NAME} C CXX)
+project(${PROJECT_NAME} C)
 
 # Add definition
 if(CMAKE_BUILD_TYPE MATCHES Debug)
