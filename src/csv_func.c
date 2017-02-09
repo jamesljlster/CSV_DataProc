@@ -7,6 +7,44 @@
 
 #include "debug.h"
 
+void csv_denormalize(csv_t csv, int targetColumn)
+{
+	int i;
+
+	for(i = 0; i < csv->rows; i++)
+	{
+		csv->data[i * csv->cols + targetColumn] = csv->dataBak[i * csv->cols + targetColumn];
+	}
+}
+
+void csv_normalize(csv_t csv, int targetColumn, double targetMin, double targetMax)
+{
+    int i;
+
+    double dataMin, dataMax;
+
+    // Find Max and Min Value
+    dataMin = csv->data[targetColumn];
+    dataMax = csv->data[targetColumn];
+    for(i = 1; i < csv->rows; i++)
+    {
+        if(dataMax < csv->data[i * csv->cols + targetColumn])
+			dataMax = csv->data[i * csv->cols + targetColumn];
+        if(dataMin > csv->data[i * csv->cols + targetColumn])
+			dataMin = csv->data[i * csv->cols + targetColumn];
+    }
+
+    #ifdef DEBUG
+    printf("dataMax = %lf, dataMin = %lf\n", dataMax, dataMin);
+    #endif // DEBUG
+
+    // Normalization
+    for(i = 0; i < csv->rows; i++)
+    {
+        csv->data[i * csv->cols + targetColumn] = ((csv->dataBak[i * csv->cols + targetColumn] - dataMin) / (dataMax - dataMin)) * (targetMax - targetMin) + targetMin;
+    }
+}
+
 int csv_clone(csv_t* csvPtr, csv_t src)
 {
 	int iResult;

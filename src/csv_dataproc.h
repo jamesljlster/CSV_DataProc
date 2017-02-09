@@ -36,6 +36,9 @@ int csv_get_cols(csv_t csv);
 int csv_write(csv_t csv, const char* filePath);
 int csv_delete(csv_t csv);
 
+void csv_normalize(csv_t csv, int targetColumn, double targetMin, double targetMax);
+void csv_denormalize(csv_t csv, int targetColumn);
+
 void csv_print(csv_t csv);
 
 #ifdef __cplusplus
