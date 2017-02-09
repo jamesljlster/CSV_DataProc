@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 
 #include "csv_dataproc.h"
@@ -19,6 +20,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	int matLen = 0;
 	int matRows = -1, matCols = -1, tmpCols = 0;
 	double* matrix = NULL;
+	void* allocTmp = NULL;
 
 	str_t readBuffer;
 	const char* str;
@@ -110,6 +112,17 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 
 	// Find row count
 	matRows = matLen / matCols;
+
+	allocTmp = calloc(matRows * matCols, sizeof(double));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto ERR;
+	}
+	else
+	{
+		memcpy(allocTmp, matrix, matRows * matCols * sizeof(double));
+	}
 	
 	tmpCsv = malloc(sizeof(struct _CSV));
 	if(tmpCsv == NULL)
@@ -121,6 +134,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	{
 		// Assign values
 		tmpCsv->data = matrix;
+		tmpCsv->dataBak = allocTmp;
 		tmpCsv->rows = matRows;
 		tmpCsv->cols = matCols;
 
@@ -132,6 +146,9 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 ERR:
 	if(matrix != NULL)
 		free(matrix);
+
+	if(allocTmp != NULL)
+		free(allocTmp);
 
 RET:
 	if(fileRead != NULL)

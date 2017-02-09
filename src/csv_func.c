@@ -7,6 +7,44 @@
 
 #include "debug.h"
 
+void csv_denormalize(csv_t csv, int targetColumn)
+{
+	int i;
+
+	for(i = 0; i < csv->rows; i++)
+	{
+		csv->data[i * csv->cols + targetColumn] = csv->dataBak[i * csv->cols + targetColumn];
+	}
+}
+
+void csv_normalize(csv_t csv, int targetColumn, double targetMin, double targetMax)
+{
+    int i;
+
+    double dataMin, dataMax;
+
+    // Find Max and Min Value
+    dataMin = csv->data[targetColumn];
+    dataMax = csv->data[targetColumn];
+    for(i = 1; i < csv->rows; i++)
+    {
+        if(dataMax < csv->data[i * csv->cols + targetColumn])
+			dataMax = csv->data[i * csv->cols + targetColumn];
+        if(dataMin > csv->data[i * csv->cols + targetColumn])
+			dataMin = csv->data[i * csv->cols + targetColumn];
+    }
+
+    #ifdef DEBUG
+    printf("dataMax = %lf, dataMin = %lf\n", dataMax, dataMin);
+    #endif // DEBUG
+
+    // Normalization
+    for(i = 0; i < csv->rows; i++)
+    {
+        csv->data[i * csv->cols + targetColumn] = ((csv->dataBak[i * csv->cols + targetColumn] - dataMin) / (dataMax - dataMin)) * (targetMax - targetMin) + targetMin;
+    }
+}
+
 int csv_clone(csv_t* csvPtr, csv_t src)
 {
 	int iResult;
@@ -21,6 +59,7 @@ int csv_clone(csv_t* csvPtr, csv_t src)
 	}
 
 	memcpy(tmp->data, src->data, sizeof(double) * src->rows * src->cols);
+	memcpy(tmp->dataBak, src->dataBak, sizeof(double) * src->rows * src->cols);
 
 	*csvPtr = tmp;
 
@@ -49,6 +88,16 @@ double csv_get_value(csv_t csv, int row, int col)
 
 }
 
+double* csv_get_value_ptr(csv_t csv, int row, int col)
+{
+	// Checking
+	assert(row < csv->rows && row >= 0);
+	assert(col < csv->cols && col >= 0);
+
+	return &(csv->data[row * csv->cols + col]);
+
+}
+
 int csv_set_value(csv_t csv, int row, int col, double num)
 {
 	// Checking
@@ -56,6 +105,7 @@ int csv_set_value(csv_t csv, int row, int col, double num)
 		return CSV_OUT_OF_RANGE;
 	
 	csv->data[row * csv->cols + col] = num;
+	csv->dataBak[row * csv->cols + col] = num;
 
 	return CSV_NO_ERROR;
 }
@@ -112,6 +162,11 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 		retValue = CSV_MEM_FAILED;
 		goto RET;
 	}
+	else
+	{
+		tmpCsv->rows = rows;
+		tmpCsv->cols = cols;
+	}
 
 	allocTmp = calloc(rows * cols, sizeof(double));
 	if(allocTmp == NULL)
@@ -122,8 +177,19 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	else
 	{
 		tmpCsv->data = allocTmp;
-		tmpCsv->rows = rows;
-		tmpCsv->cols = cols;
+		allocTmp = NULL;
+	}
+
+	allocTmp = calloc(rows * cols, sizeof(double));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto ERR;
+	}
+	else
+	{
+		tmpCsv->dataBak = allocTmp;
+		allocTmp = NULL;
 	}
 
 	*csvPtr = tmpCsv;
@@ -136,6 +202,9 @@ ERR:
 	if(tmpCsv != NULL)
 		free(tmpCsv);
 
+	if(allocTmp != NULL)
+		free(allocTmp);
+
 RET:
 	return retValue;
 }
@@ -146,12 +215,23 @@ int csv_delete(csv_t csv)
 	
 	if(csv != NULL)
 	{
+		log("free data");
 		if(csv->data != NULL)
 		{
 			free(csv->data);
 		}
+		log("finish");
 
+		log("free data backup");
+		if(csv->dataBak != NULL)
+		{
+			free(csv->dataBak);
+		}
+		log("finish");
+
+		log("free csv struct");
 		free(csv);
+		log("finish");
 	}
 
 	log("exit");
