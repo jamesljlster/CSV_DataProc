@@ -192,6 +192,18 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 		allocTmp = NULL;
 	}
 
+	allocTmp = calloc(cols, sizeof(char*));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto ERR;
+	}
+	else
+	{
+		tmpCsv->header = allocTmp;
+		allocTmp = NULL;
+	}
+
 	*csvPtr = tmpCsv;
 
 	log("exit");
@@ -211,6 +223,8 @@ RET:
 
 int csv_delete(csv_t csv)
 {
+	int i;
+
 	log("enter");
 	
 	if(csv != NULL)
@@ -232,6 +246,18 @@ int csv_delete(csv_t csv)
 		log("free csv struct");
 		free(csv);
 		log("finish");
+
+		if(csv->header != NULL)
+		{
+			for(i = 0; i < csv->cols; i++)
+			{
+				if(csv->header[i] != NULL)
+				{
+					free(csv->header[i]);
+				}
+			}
+			free(csv->header);
+		}
 	}
 
 	log("exit");

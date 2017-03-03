@@ -16,6 +16,7 @@ typedef struct _CSV
 	int cols;
 	double* dataBak;
 	double* data;
+	char** header;
 } *csv_t;
 
 #ifdef __cplusplus
