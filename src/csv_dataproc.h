@@ -16,6 +16,7 @@ typedef struct _CSV
 	int cols;
 	double* dataBak;
 	double* data;
+	int enableHeader;
 	char** header;
 } *csv_t;
 
@@ -41,6 +42,9 @@ void csv_normalize(csv_t csv, int targetColumn, double targetMin, double targetM
 void csv_denormalize(csv_t csv, int targetColumn);
 
 void csv_print(csv_t csv);
+
+int csv_set_header(csv_t csv, int col, char* header);
+void csv_set_enable_header(csv_t csv, int enableHeader);
 
 #ifdef __cplusplus
 }

@@ -7,6 +7,33 @@
 
 #include "debug.h"
 
+int csv_set_header(csv_t csv, int col, char* header)
+{
+	int retValue = CSV_NO_ERROR;
+	void* allocTmp = NULL;
+
+	// Memory allocation
+	allocTmp = calloc(strlen(header) + 1, sizeof(char));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto RET;
+	}
+	else
+	{
+		memcpy(allocTmp, header, strlen(header) * sizeof(char));
+		csv->header[col] = allocTmp;
+	}
+
+RET:
+	return retValue;
+}
+
+void csv_set_enable_header(csv_t csv, int enableHeader)
+{
+	csv->enableHeader = enableHeader;
+}
+
 void csv_denormalize(csv_t csv, int targetColumn)
 {
 	int i;
@@ -166,6 +193,7 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	{
 		tmpCsv->rows = rows;
 		tmpCsv->cols = cols;
+		tmpCsv->printHeader = 0;
 	}
 
 	allocTmp = calloc(rows * cols, sizeof(double));
