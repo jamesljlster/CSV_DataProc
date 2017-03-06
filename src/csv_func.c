@@ -193,7 +193,7 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	{
 		tmpCsv->rows = rows;
 		tmpCsv->cols = cols;
-		tmpCsv->printHeader = 0;
+		tmpCsv->enableHeader = 0;
 	}
 
 	allocTmp = calloc(rows * cols, sizeof(double));
