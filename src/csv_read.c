@@ -20,7 +20,6 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	int matLen = 0;
 	int matRows = -1, matCols = -1, tmpCols = 0;
 	double* matrix = NULL;
-	void* allocTmp = NULL;
 
 	str_t readBuffer;
 	const char* str;
@@ -65,7 +64,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 				if(errno == ERANGE)
 				{
 					retValue = CSV_FILE_FAILED;
-					goto ERR;
+					goto RET;
 				}
 				else
 				{
@@ -80,7 +79,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 				if(iResult != CSV_NO_ERROR)
 				{
 					retValue = iResult;
-					goto ERR;
+					goto RET;
 				}
 
 				// Check end of line
@@ -95,7 +94,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 						if(matCols != tmpCols)
 						{
 							retValue = CSV_FORMAT_ERROR;
-							goto ERR;
+							goto RET;
 						}
 					}
 
@@ -113,44 +112,26 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	// Find row count
 	matRows = matLen / matCols;
 
-	allocTmp = calloc(matRows * matCols, sizeof(double));
-	if(allocTmp == NULL)
+	// Create csv
+	iResult = csv_create(&tmpCsv, matRows, matCols);
+	if(iResult != CSV_NO_ERROR)
 	{
-		retValue = CSV_MEM_FAILED;
-		goto ERR;
+		retValue = iResult;
+		goto RET;
 	}
 	else
 	{
-		memcpy(allocTmp, matrix, matRows * matCols * sizeof(double));
-	}
-	
-	tmpCsv = malloc(sizeof(struct _CSV));
-	if(tmpCsv == NULL)
-	{
-		retValue = CSV_MEM_FAILED;
-		goto ERR;
-	}
-	else
-	{
-		// Assign values
-		tmpCsv->data = matrix;
-		tmpCsv->dataBak = allocTmp;
-		tmpCsv->rows = matRows;
-		tmpCsv->cols = matCols;
-
-		*csvPtr = tmpCsv;
+		// Clone matrix
+		memcpy(tmpCsv->data, matrix, matRows * matCols * sizeof(double));
+		memcpy(tmpCsv->dataBak, matrix, matRows * matCols * sizeof(double));
 	}
 
-	goto RET;
+	*csvPtr = tmpCsv;
 
-ERR:
+RET:
 	if(matrix != NULL)
 		free(matrix);
 
-	if(allocTmp != NULL)
-		free(allocTmp);
-
-RET:
 	if(fileRead != NULL)
 		fclose(fileRead);
 	
