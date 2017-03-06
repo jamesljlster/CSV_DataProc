@@ -7,6 +7,39 @@
 
 #include "debug.h"
 
+int csv_set_header(csv_t csv, int col, char* header)
+{
+	int retValue = CSV_NO_ERROR;
+	void* allocTmp = NULL;
+
+	// Memory allocation
+	allocTmp = calloc(strlen(header) + 1, sizeof(char));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto RET;
+	}
+	else
+	{
+		memcpy(allocTmp, header, strlen(header) * sizeof(char));
+
+		// Free old date
+		if(csv->header[col] != NULL)
+		{
+			free(csv->header[col]);
+		}
+		csv->header[col] = allocTmp;
+	}
+
+RET:
+	return retValue;
+}
+
+void csv_set_enable_header(csv_t csv, int enableHeader)
+{
+	csv->enableHeader = enableHeader;
+}
+
 void csv_denormalize(csv_t csv, int targetColumn)
 {
 	int i;
@@ -124,6 +157,23 @@ int csv_write(csv_t csv, const char* filePath)
 		goto RET;
 	}
 
+	// Write header
+	if(csv->enableHeader > 0)
+	{
+		for(i = 0; i < csv->cols; i++)
+		{
+			fprintf(fileWrite, "%s", csv->header[i]);
+			if(i == csv->cols - 1)
+			{
+				fprintf(fileWrite, "\n");
+			}
+			else
+			{
+				fprintf(fileWrite, ",");
+			}
+		}
+	}
+
 	// Write file
 	for(i = 0; i < csv->rows; i++)
 	{
@@ -136,7 +186,7 @@ int csv_write(csv_t csv, const char* filePath)
 			}
 			else
 			{
-				fprintf(fileWrite, ", ");
+				fprintf(fileWrite, ",");
 			}
 		}
 	}
@@ -166,6 +216,7 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	{
 		tmpCsv->rows = rows;
 		tmpCsv->cols = cols;
+		tmpCsv->enableHeader = 0;
 	}
 
 	allocTmp = calloc(rows * cols, sizeof(double));
@@ -192,6 +243,18 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 		allocTmp = NULL;
 	}
 
+	allocTmp = calloc(cols, sizeof(char*));
+	if(allocTmp == NULL)
+	{
+		retValue = CSV_MEM_FAILED;
+		goto ERR;
+	}
+	else
+	{
+		tmpCsv->header = allocTmp;
+		allocTmp = NULL;
+	}
+
 	*csvPtr = tmpCsv;
 
 	log("exit");
@@ -211,6 +274,8 @@ RET:
 
 int csv_delete(csv_t csv)
 {
+	int i;
+
 	log("enter");
 	
 	if(csv != NULL)
@@ -232,6 +297,18 @@ int csv_delete(csv_t csv)
 		log("free csv struct");
 		free(csv);
 		log("finish");
+
+		if(csv->header != NULL)
+		{
+			for(i = 0; i < csv->cols; i++)
+			{
+				if(csv->header[i] != NULL)
+				{
+					free(csv->header[i]);
+				}
+			}
+			free(csv->header);
+		}
 	}
 
 	log("exit");
