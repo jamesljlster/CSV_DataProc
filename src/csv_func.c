@@ -157,6 +157,23 @@ int csv_write(csv_t csv, const char* filePath)
 		goto RET;
 	}
 
+	// Write header
+	if(csv->enableHeader > 0)
+	{
+		for(i = 0; i < csv->cols; i++)
+		{
+			fprintf(fileWrite, "%s", csv->header[i]);
+			if(i == csv->cols - 1)
+			{
+				fprintf(fileWrite, "\n");
+			}
+			else
+			{
+				fprintf(fileWrite, ",");
+			}
+		}
+	}
+
 	// Write file
 	for(i = 0; i < csv->rows; i++)
 	{
@@ -169,7 +186,7 @@ int csv_write(csv_t csv, const char* filePath)
 			}
 			else
 			{
-				fprintf(fileWrite, ", ");
+				fprintf(fileWrite, ",");
 			}
 		}
 	}
