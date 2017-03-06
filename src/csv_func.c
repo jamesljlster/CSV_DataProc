@@ -22,6 +22,12 @@ int csv_set_header(csv_t csv, int col, char* header)
 	else
 	{
 		memcpy(allocTmp, header, strlen(header) * sizeof(char));
+
+		// Free old date
+		if(csv->header[col] != NULL)
+		{
+			free(csv->header[col]);
+		}
 		csv->header[col] = allocTmp;
 	}
 
