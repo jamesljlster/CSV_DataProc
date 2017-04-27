@@ -296,22 +296,24 @@ int csv_delete(csv_t csv)
 		}
 		log("finish");
 
-		log("free csv struct");
-		free(csv);
-		log("finish");
-
 		log("free header");
 		if(csv->header != NULL)
 		{
 			for(i = 0; i < csv->cols; i++)
 			{
+				log("free header %d", i);
 				if(csv->header[i] != NULL)
 				{
 					free(csv->header[i]);
 				}
+				log("finish");
 			}
 			free(csv->header);
 		}
+		log("finish");
+		
+		log("free csv struct");
+		free(csv);
 		log("finish");
 	}
 
