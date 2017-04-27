@@ -16,6 +16,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	int retValue = CSV_NO_ERROR;
 	char tmpRead;
 	double tmpDecode;
+	char* tmpPtr;
 
 	int matLen = 0;
 	int matRows = -1, matCols = -1, tmpCols = 0;
@@ -60,14 +61,17 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 			}
 			else
 			{
-				tmpDecode = strtod(str, NULL);
-				if(errno == ERANGE)
+				log("Decoding: %s", str);
+				tmpDecode = strtod(str, &tmpPtr);
+				if(str == tmpPtr)
 				{
+					log("Failed to decode: %s", str);
 					retValue = CSV_FILE_FAILED;
 					goto RET;
 				}
 				else
 				{
+					log("Decoded: %lf", tmpDecode);
 					tmpCols++;
 					
 					// Clear read buffer
@@ -125,6 +129,28 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 		memcpy(tmpCsv->data, matrix, matRows * matCols * sizeof(double));
 		memcpy(tmpCsv->dataBak, matrix, matRows * matCols * sizeof(double));
 	}
+	
+	log("matRows: %d", matRows);
+	log("matCols: %d", matCols);
+	#ifdef DEBUG
+	int i, j;
+	printf("Matrix: \n");
+	for(i = 0; i < matRows; i++)
+	{
+		for(j = 0; j < matCols; j++)
+		{
+			printf("%lf", matrix[i * matCols + j]);
+			if(j == matCols - 1)
+			{
+				printf("\n");
+			}
+			else
+			{
+				printf(",");
+			}
+		}
+	}
+	#endif
 
 	*csvPtr = tmpCsv;
 
@@ -145,21 +171,36 @@ RET:
 int csv_append_number(double** dstPtr, int* lenPtr, double num)
 {
 	int retValue = CSV_NO_ERROR;
+	int tmpLen;
 	void* allocTmp = NULL;
 
 	log("enter");
+	log("Append: %lf", num);
 
-	allocTmp = realloc(*dstPtr, *lenPtr * (sizeof(double) + 1));
+	tmpLen = *lenPtr;
+	allocTmp = realloc(*dstPtr, (tmpLen + 1) * sizeof(double));
 	if(allocTmp == NULL)
 	{
 		retValue = CSV_MEM_FAILED;
 	}
 	else
 	{
-		*dstPtr = allocTmp;
-		*lenPtr += 1;
-		(*dstPtr)[*lenPtr - 1] = num;
+		(*dstPtr) = allocTmp;
+		(*lenPtr) = tmpLen + 1;
+		(*dstPtr)[tmpLen] = num;
+		log("Appended: %lf", (*dstPtr)[tmpLen]);
 	}
+	
+	#ifdef DEBUG
+	int i;
+	printf("\n");
+	printf("Array: ");
+	for(i = 0; i < (*lenPtr); i++)
+	{
+		printf("%lf, ", (*dstPtr)[i]);
+	}
+	printf("\n\n");
+	#endif
 
 	log("exit");
 

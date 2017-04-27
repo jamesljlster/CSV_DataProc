@@ -3,6 +3,10 @@
 
 #include "csv_strproc.h"
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 #include "debug.h"
 
 int str_zero_mem(str_t* strPtr)

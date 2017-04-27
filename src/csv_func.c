@@ -214,6 +214,8 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	}
 	else
 	{
+		memset(tmpCsv, 0, sizeof(struct _CSV));
+		
 		tmpCsv->rows = rows;
 		tmpCsv->cols = cols;
 		tmpCsv->enableHeader = 0;
@@ -298,6 +300,7 @@ int csv_delete(csv_t csv)
 		free(csv);
 		log("finish");
 
+		log("free header");
 		if(csv->header != NULL)
 		{
 			for(i = 0; i < csv->cols; i++)
@@ -309,6 +312,7 @@ int csv_delete(csv_t csv)
 			}
 			free(csv->header);
 		}
+		log("finish");
 	}
 
 	log("exit");
