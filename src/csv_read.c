@@ -12,7 +12,7 @@ int csv_append_number(double** dst, int* dstLen, double num);
 
 int csv_read(csv_t* csvPtr, const char* filePath)
 {
-	int iResult;
+	int iResult, stopParse;
 	int retValue = CSV_NO_ERROR;
 	char tmpRead;
 	double tmpDecode;
@@ -43,15 +43,18 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	}
 
 	// Read file
-	while(!feof(fileRead))
+	stopParse = 0;
+	while(!stopParse)
 	{
 		// Read a character
 		tmpRead = str_get_char(fileRead, READ_ALL);
 		if(tmpRead < 0)
-			break;
+		{
+			stopParse = 1;
+		}
 
 		// Processing character
-		if(tmpRead == ',' || tmpRead == LF)
+		if(tmpRead == ',' || tmpRead == LF || feof(fileRead))
 		{
 			// Decode buffer to double value
 			str = str_getbuf(&readBuffer);
@@ -87,7 +90,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 				}
 
 				// Check end of line
-				if(tmpRead == LF)
+				if(tmpRead == LF || feof(fileRead))
 				{
 					if(matCols == -1)
 					{
