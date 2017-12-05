@@ -50,11 +50,11 @@ void csv_denormalize(csv_t csv, int targetColumn)
 	}
 }
 
-void csv_normalize(csv_t csv, int targetColumn, double targetMin, double targetMax)
+void csv_normalize(csv_t csv, int targetColumn, float targetMin, float targetMax)
 {
     int i;
 
-    double dataMin, dataMax;
+    float dataMin, dataMax;
 
     // Find Max and Min Value
     dataMin = csv->data[targetColumn];
@@ -91,8 +91,8 @@ int csv_clone(csv_t* csvPtr, csv_t src)
 		goto RET;
 	}
 
-	memcpy(tmp->data, src->data, sizeof(double) * src->rows * src->cols);
-	memcpy(tmp->dataBak, src->dataBak, sizeof(double) * src->rows * src->cols);
+	memcpy(tmp->data, src->data, sizeof(float) * src->rows * src->cols);
+	memcpy(tmp->dataBak, src->dataBak, sizeof(float) * src->rows * src->cols);
 
 	*csvPtr = tmp;
 
@@ -111,7 +111,7 @@ int csv_get_cols(csv_t csv)
 	return csv->cols;
 }
 
-double csv_get_value(csv_t csv, int row, int col)
+float csv_get_value(csv_t csv, int row, int col)
 {
 	// Checking
 	assert(row < csv->rows && row >= 0);
@@ -121,7 +121,7 @@ double csv_get_value(csv_t csv, int row, int col)
 
 }
 
-double* csv_get_value_ptr(csv_t csv, int row, int col)
+float* csv_get_value_ptr(csv_t csv, int row, int col)
 {
 	// Checking
 	assert(row < csv->rows && row >= 0);
@@ -131,12 +131,12 @@ double* csv_get_value_ptr(csv_t csv, int row, int col)
 
 }
 
-int csv_set_value(csv_t csv, int row, int col, double num)
+int csv_set_value(csv_t csv, int row, int col, float num)
 {
 	// Checking
 	if(row >= csv->rows || col >= csv->cols)
 		return CSV_OUT_OF_RANGE;
-	
+
 	csv->data[row * csv->cols + col] = num;
 	csv->dataBak[row * csv->cols + col] = num;
 
@@ -215,13 +215,13 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 	else
 	{
 		memset(tmpCsv, 0, sizeof(struct _CSV));
-		
+
 		tmpCsv->rows = rows;
 		tmpCsv->cols = cols;
 		tmpCsv->enableHeader = 0;
 	}
 
-	allocTmp = calloc(rows * cols, sizeof(double));
+	allocTmp = calloc(rows * cols, sizeof(float));
 	if(allocTmp == NULL)
 	{
 		retValue = CSV_MEM_FAILED;
@@ -233,7 +233,7 @@ int csv_create(csv_t* csvPtr, int rows, int cols)
 		allocTmp = NULL;
 	}
 
-	allocTmp = calloc(rows * cols, sizeof(double));
+	allocTmp = calloc(rows * cols, sizeof(float));
 	if(allocTmp == NULL)
 	{
 		retValue = CSV_MEM_FAILED;
@@ -279,7 +279,7 @@ int csv_delete(csv_t csv)
 	int i;
 
 	log("enter");
-	
+
 	if(csv != NULL)
 	{
 		log("free data");
@@ -311,21 +311,21 @@ int csv_delete(csv_t csv)
 			free(csv->header);
 		}
 		log("finish");
-		
+
 		log("free csv struct");
 		free(csv);
 		log("finish");
 	}
 
 	log("exit");
-	
+
 	return CSV_NO_ERROR;
 }
 
 void csv_print(csv_t csv)
 {
 	int i, j;
-	
+
 	log("enter");
 
 	for(i = 0; i < csv->rows; i++)

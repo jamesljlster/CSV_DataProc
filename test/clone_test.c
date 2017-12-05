@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	int iResult;
 	csv_t csv;
 	csv_t clone;
-	
+
 	if(argc < 2)
 	{
 		printf("Assign a csv file to run a program\n");
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 		printf("csv_clone() failed with error: %d\n", iResult);
 		return -1;
 	}
-	
+
 	printf("Original CSV:\n");
 	csv_print(csv);
 

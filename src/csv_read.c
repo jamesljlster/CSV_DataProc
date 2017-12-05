@@ -8,19 +8,19 @@
 
 #include "debug.h"
 
-int csv_append_number(double** dst, int* dstLen, double num);
+int csv_append_number(float** dst, int* dstLen, float num);
 
 int csv_read(csv_t* csvPtr, const char* filePath)
 {
 	int iResult, stopParse;
 	int retValue = CSV_NO_ERROR;
 	char tmpRead;
-	double tmpDecode;
+	float tmpDecode;
 	char* tmpPtr;
 
 	int matLen = 0;
 	int matRows = -1, matCols = -1, tmpCols = 0;
-	double* matrix = NULL;
+	float* matrix = NULL;
 
 	str_t readBuffer;
 	const char* str;
@@ -56,7 +56,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 		// Processing character
 		if(tmpRead == ',' || tmpRead == LF || feof(fileRead))
 		{
-			// Decode buffer to double value
+			// Decode buffer to float value
 			str = str_getbuf(&readBuffer);
 			if(str == NULL)
 			{
@@ -76,7 +76,7 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 				{
 					log("Decoded: %lf", tmpDecode);
 					tmpCols++;
-					
+
 					// Clear read buffer
 					str_clean(&readBuffer);
 				}
@@ -129,10 +129,10 @@ int csv_read(csv_t* csvPtr, const char* filePath)
 	else
 	{
 		// Clone matrix
-		memcpy(tmpCsv->data, matrix, matRows * matCols * sizeof(double));
-		memcpy(tmpCsv->dataBak, matrix, matRows * matCols * sizeof(double));
+		memcpy(tmpCsv->data, matrix, matRows * matCols * sizeof(float));
+		memcpy(tmpCsv->dataBak, matrix, matRows * matCols * sizeof(float));
 	}
-	
+
 	log("matRows: %d", matRows);
 	log("matCols: %d", matCols);
 	#ifdef DEBUG
@@ -163,15 +163,15 @@ RET:
 
 	if(fileRead != NULL)
 		fclose(fileRead);
-	
+
 	str_clean(&readBuffer);
-	
+
 	log("exit");
 
 	return retValue;
 }
 
-int csv_append_number(double** dstPtr, int* lenPtr, double num)
+int csv_append_number(float** dstPtr, int* lenPtr, float num)
 {
 	int retValue = CSV_NO_ERROR;
 	int tmpLen;
@@ -181,7 +181,7 @@ int csv_append_number(double** dstPtr, int* lenPtr, double num)
 	log("Append: %lf", num);
 
 	tmpLen = *lenPtr;
-	allocTmp = realloc(*dstPtr, (tmpLen + 1) * sizeof(double));
+	allocTmp = realloc(*dstPtr, (tmpLen + 1) * sizeof(float));
 	if(allocTmp == NULL)
 	{
 		retValue = CSV_MEM_FAILED;
@@ -193,7 +193,7 @@ int csv_append_number(double** dstPtr, int* lenPtr, double num)
 		(*dstPtr)[tmpLen] = num;
 		log("Appended: %lf", (*dstPtr)[tmpLen]);
 	}
-	
+
 	#ifdef DEBUG
 	int i;
 	printf("\n");

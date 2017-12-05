@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	int i;
 	int iResult;
 	csv_t csv;
-	
+
 	if(argc < 2)
 	{
 		printf("Assign a csv file to run the program\n");

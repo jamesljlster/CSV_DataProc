@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	int i, j, k;
 
 	char buffer[BUF_LEN] = {0};
-	
+
 	csv_t csv;
 
 	// Checking

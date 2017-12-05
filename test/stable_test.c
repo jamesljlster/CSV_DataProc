@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	int iResult;
 	csv_t csv;
-	
+
 	while(1)
 	{
 		iResult = csv_read(&csv, TEST_CSV_PATH);

@@ -14,8 +14,8 @@ typedef struct _CSV
 {
 	int rows;
 	int cols;
-	double* dataBak;
-	double* data;
+	float* dataBak;
+	float* data;
 	int enableHeader;
 	char** header;
 } *csv_t;
@@ -28,9 +28,9 @@ int csv_create(csv_t* csvPtr, int rows, int cols);
 int csv_read(csv_t* csvPtr, const char* filePath);
 int csv_clone(csv_t* csvPtr, csv_t src);
 
-int csv_set_value(csv_t csv, int row, int col, double num);
-double csv_get_value(csv_t csv, int row, int col);
-double* csv_get_value_ptr(csv_t csv, int row, int col);
+int csv_set_value(csv_t csv, int row, int col, float num);
+float csv_get_value(csv_t csv, int row, int col);
+float* csv_get_value_ptr(csv_t csv, int row, int col);
 
 int csv_get_rows(csv_t csv);
 int csv_get_cols(csv_t csv);
@@ -38,7 +38,7 @@ int csv_get_cols(csv_t csv);
 int csv_write(csv_t csv, const char* filePath);
 int csv_delete(csv_t csv);
 
-void csv_normalize(csv_t csv, int targetColumn, double targetMin, double targetMax);
+void csv_normalize(csv_t csv, int targetColumn, float targetMin, float targetMax);
 void csv_denormalize(csv_t csv, int targetColumn);
 
 void csv_print(csv_t csv);

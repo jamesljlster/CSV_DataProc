@@ -46,20 +46,20 @@ int str_clean(str_t* strPtr)
 	}
 
 	strPtr->size = 1;
-	
+
 	log("exit");
 
 	return 0;
 }
 
 int str_get_char(FILE* fileRead, int readAction)
-{	
+{
 	int iResult;
 	int readCount;
 	char tmpRead;
 
 	log("enter");
-	
+
 	// Read a character
 	readCount = 1;
 	iResult = fread((void*)&tmpRead, sizeof(char), readCount, fileRead);
@@ -72,7 +72,7 @@ int str_get_char(FILE* fileRead, int readAction)
 	// Determint if character is signaficant
 	if(str_check_sigchar(tmpRead))
 		goto RET;
-	
+
 	log("exit");
 
 ERR:
@@ -86,7 +86,7 @@ int str_append(str_t* strPtr, int appendChar)
 {
 	int retValue = 0;
 	void* allocTmp = NULL;
-	
+
 	log("enter");
 
 	// Checking

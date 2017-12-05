@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 {
 	int iResult;
 	int i, j, k;
-	
+
 	csv_t csv;
 
 	// Checking
